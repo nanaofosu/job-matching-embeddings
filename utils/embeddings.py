@@ -1,8 +1,27 @@
 import openai
 import re
+import json
+import os
 from sklearn.metrics.pairwise import cosine_similarity
 
-cache = {}  # Cache for storing text embeddings
+# Load environment variables from the .env file
+from dotenv import load_dotenv
+load_dotenv()
+
+# Define CACHE_FILE variable
+CACHE_FILE = os.getenv("CACHE_FILE", "cache.json")
+
+# Load cache from file if it exists
+if os.path.exists(CACHE_FILE):
+    with open(CACHE_FILE, 'r') as f:
+        cache = json.load(f)
+else:
+    cache = {}  # Initialize empty cache
+
+def save_cache():
+    """Save the current cache to a file."""
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(cache, f)
 
 def clean_text(text):
     """
@@ -37,6 +56,7 @@ def get_embeddings(text):
         response = openai.Embedding.create(input=[cleaned_text], model="text-embedding-ada-002")
         embedding = response['data'][0]['embedding']
         cache[cleaned_text] = embedding
+        save_cache()  # Save the updated cache to the file
         return embedding
     except openai.error.InvalidRequestError as e:
         print(f"Failed to get embedding for text: {cleaned_text}")
