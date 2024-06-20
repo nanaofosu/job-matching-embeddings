@@ -2,6 +2,8 @@ import openai
 import re
 from sklearn.metrics.pairwise import cosine_similarity
 
+cache = {}  # Cache for storing text embeddings
+
 def clean_text(text):
     """
     This function takes a text input and performs several cleaning operations on it.
@@ -20,18 +22,24 @@ def clean_text(text):
 
     return text
 
-def get_embedding(text):
+def get_embeddings(text):
     """
     This function takes a text input, cleans it using the clean_text function,
     and then retrieves the embedding for the cleaned text using the OpenAI API.
+    It uses a cache to avoid redundant API calls.
     It returns the embedding if successful, or None if there was an error.
     """
-    text = clean_text(text)
+    cleaned_text = clean_text(text)
+    if cleaned_text in cache:
+        return cache[cleaned_text]
+
     try:
-        response = openai.Embedding.create(input=[text], model="text-embedding-3-small")
-        return response['data'][0]['embedding']
+        response = openai.Embedding.create(input=[cleaned_text], model="text-embedding-ada-002")
+        embedding = response['data'][0]['embedding']
+        cache[cleaned_text] = embedding
+        return embedding
     except openai.error.InvalidRequestError as e:
-        print(f"Failed to get embedding for text: {text}")
+        print(f"Failed to get embedding for text: {cleaned_text}")
         print(f"Error: {e}")
         return None
 
@@ -41,3 +49,21 @@ def calculate_similarity(embedding1, embedding2):
     It returns the similarity score as a float value.
     """
     return cosine_similarity([embedding1], [embedding2])[0][0]
+
+# Example usage
+if __name__ == "__main__":
+    texts = [
+        "Example text 1",
+        "Example text 2",
+        "Another example text",
+        "And another one!"
+    ]
+    embeddings = {text: get_embeddings(text) for text in texts}
+    for text, embedding in embeddings.items():
+        print(f"Text: {text}\nEmbedding: {embedding}")
+
+    # Example similarity calculation
+    if len(embeddings) >= 2:
+        texts_list = list(embeddings.keys())
+        sim_score = calculate_similarity(embeddings[texts_list[0]], embeddings[texts_list[1]])
+        print(f"Similarity between '{texts_list[0]}' and '{texts_list[1]}': {sim_score}")
