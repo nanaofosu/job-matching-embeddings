@@ -1,0 +1,56 @@
+Alice Jones
+Detroit, MI | (555) 555-5555 | alice.jones@email.com
+
+Summary
+
+Highly motivated and results-oriented Sr. Software Developer with 10+ years of experience designing, developing, and implementing complex software solutions. Proven ability to lead technical projects, manage cross-functional teams, and deliver high-quality code within deadlines. Expertise in Java, Spring Boot, React, and AWS. Passionate about building innovative and user-friendly web applications.
+
+Technical Skills
+
+Programming Languages: Java (Expert), Python (Proficient), JavaScript (Expert)
+Frameworks: Spring Boot (Expert), React (Expert), Node.js (Proficient)
+Databases: MySQL (Expert), PostgreSQL (Proficient)
+Cloud Platforms: AWS (Expert - Certified AWS Solutions Architect Associate)
+Version Control Systems: Git
+CI/CD Tools: Jenkins, CircleCI
+DevOps: Familiar with DevOps principles and practices
+Testing: Unit testing, Integration testing
+
+Soft Skills
+
+Communication: Excellent written and verbal communication skills.
+Teamwork: Ability to collaborate effectively in a team environment.
+Problem-Solving: Strong analytical and problem-solving skills.
+Time Management: Ability to manage multiple tasks efficiently and meet deadlines.
+Adaptability: Willingness to learn new technologies and adapt to changing requirements.
+Work Experience
+
+Sr. Software Developer
+
+Acme Technologies, Detroit, MI |  August 2014 - Present
+
+Led the development team for a new e-commerce platform for a major retail client, utilizing Spring Boot, React, and AWS. (Increased online sales by 15% within the first year)
+Designed and implemented a scalable microservices architecture for a high-traffic social media application.
+Mentored junior developers and ensured code quality through code reviews and pair programming.
+Collaborated with cross-functional teams (QA, product managers) to define technical requirements, develop user stories, and deliver projects on time and within budget.
+Played a key role in the migration of multiple legacy applications to the AWS cloud, resulting in improved performance and cost efficiency.
+Software Developer
+
+Metro Inc., Chicago, IL | June 2011 - July 2014
+
+Developed and maintained internal web applications used by various departments across the company.
+Contributed to the implementation of a new data analytics platform using Python and machine learning libraries.
+Conducted unit testing and integration testing to ensure code quality.
+Worked closely with other developers and analysts to resolve technical challenges and deliver data-driven solutions.
+Education
+
+Bachelor of Science in Computer Science
+
+University of Michigan, Ann Arbor, MI | May 2011
+
+Projects (Optional)
+
+Developed a personal website showcasing my skills in front-end development using React and Gatsby.
+Awards & Recognition
+
+Employee of the Month Award (Acme Technologies) - January 2023
