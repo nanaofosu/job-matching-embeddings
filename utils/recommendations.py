@@ -2,7 +2,7 @@ from datetime import datetime
 
 class RecommendationsHandler:
     @staticmethod
-    def display_recommendations(recommendations):
+    def display_recommendations(recommendations, recommendation_reasons, recommendation_summaries):
         for idx, row in recommendations.iterrows():
             print(f"Recommendation {idx+1}:")
             print(f"Title: {row['title']}")
@@ -15,10 +15,12 @@ class RecommendationsHandler:
             print(f"Company URL: {row['company_url']}")
             print(f"Job URL: {row['job_url']}")
             print(f"Job Direct URL: {row['job_url_direct']}")
+            print(f"Recommendation Reason: {recommendation_reasons[idx]}")
+            print(f"Summary: {recommendation_summaries[idx]}")
             print()
 
     @staticmethod
-    def write_recommendations_to_md(recommendations):
+    def write_recommendations_to_md(recommendations, recommendation_reasons, recommendation_summaries):
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         filename = f"recommendations-{timestamp}.md"
 
@@ -36,7 +38,7 @@ class RecommendationsHandler:
                 f.write(f"**Company URL:** {row['company_url']}\n\n")
                 f.write(f"**Job URL:** {row['job_url']}\n\n")
                 f.write(f"**Job Direct URL:** {row['job_url_direct']}\n\n")
+                f.write(f"**Recommendation Reason:** {recommendation_reasons[idx]}\n\n")
+                f.write(f"**Summary:** {recommendation_summaries[idx]}\n\n")
                 f.write("---\n\n")
-
         print(f"Recommendations written to {filename}")
-
