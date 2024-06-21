@@ -1,11 +1,10 @@
-import os
-import pandas as pd
-# from utils.embeddings import get_embeddings, calculate_similarity
 import openai
 from typing import List
 from utils.config import get_env_variable
 from utils.data_loader import DataLoader
 from utils.embeddings_calculator import EmbeddingsCalculator
+from utils.recommendations import RecommendationsHandler
+
 
 openai.api_key = get_env_variable('OPENAI_API_KEY')
 
@@ -29,7 +28,7 @@ class JobMatcher:
 
     # Load resume text from file
     def load_resume(self):
-       self.resume_text = self.data_loader.load_text('data/resume.txt')
+        self.resume_text = self.data_loader.load_text('data/resume.txt')
 
     # Get job description embedding with error handling
     def get_embedding_with_error_handling(self, description: str) -> List[float]:
@@ -60,20 +59,6 @@ class JobMatcher:
         recommendations = self.ranked_jobs_df.head(MAX_RECOMMENDATIONS)
         return recommendations
 
-    # Display the recommended jobs
-    def display_recommendations(self):
-        for idx, row in self.recommendations.iterrows():
-            print(f"Recommendation {idx+1}:")
-            print(f"Title: {row['title']}")
-            print(f"Company: {row['company']}")
-            print(f"Location: {row['location']}")
-            print(f"Job Type: {row['job_type']}")
-            print(f"Date Posted: {row['date_posted']}")
-            print(f"Company URL: {row['company_url']}")
-            print(f"Job URL: {row['job_url']}")
-            print(f"Job Direct URL: {row['job_url_direct']}")
-            print()
-
     # Perform job matching process
     def match_jobs(self):
         self.load_data()
@@ -82,7 +67,8 @@ class JobMatcher:
         self.calculate_similarities()
         self.rank_jobs()
         self.recommendations = self.get_recommendations()
-        self.display_recommendations()
+        RecommendationsHandler.display_recommendations(self.recommendations)
+        RecommendationsHandler.write_recommendations_to_md(self.recommendations)
 
 # Entry point of the program
 if __name__ == "__main__":
