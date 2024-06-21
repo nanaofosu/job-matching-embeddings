@@ -1,48 +1,40 @@
 import os
 import pandas as pd
-from utils.embeddings import get_embeddings, calculate_similarity
-from dotenv import load_dotenv
+# from utils.embeddings import get_embeddings, calculate_similarity
 import openai
 from typing import List
+from utils.config import get_env_variable
+from utils.data_loader import DataLoader
+from utils.embeddings_calculator import EmbeddingsCalculator
 
-# Load environment variables from the .env file
-load_dotenv()
+openai.api_key = get_env_variable('OPENAI_API_KEY')
 
-# Set OpenAI API key (assuming it's already set in .env)
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
-# Load configuration from .env
-DEFAULT_EMBEDDING_SIZE = int(os.getenv('DEFAULT_EMBEDDING_SIZE', 1536))
-MAX_RECOMMENDATIONS = int(os.getenv('MAX_RECOMMENDATIONS', 5))
+DEFAULT_EMBEDDING_SIZE = get_env_variable('DEFAULT_EMBEDDING_SIZE', 1536, int)
+MAX_RECOMMENDATIONS = get_env_variable('MAX_RECOMMENDATIONS', 5, int)
 
 # Define a class to handle job matching
 class JobMatcher:
     def __init__(self):
+        self.data_loader = DataLoader()
+        self.embeddings_calculator = EmbeddingsCalculator()
         self.job_listings_df = None
         self.job_descriptions = None
         self.resume_text = None
         self.job_embeddings = None
         self.resume_embedding = None
 
-    # Load job listings data from CSV file
+    # Load job listings data from CSV file using DataLoader
     def load_data(self):
-        try:
-            self.job_listings_df = pd.read_csv('data/job_listings.csv')
-        except FileNotFoundError as e:
-            raise FileNotFoundError("Job listings CSV file not found. Ensure 'data/job_listings.csv' exists.") from e
+        self.job_listings_df = self.data_loader.load_csv('data/job_listings.csv')
 
     # Load resume text from file
     def load_resume(self):
-        try:
-            with open('data/resume.txt', 'r') as f:
-                self.resume_text = f.read()
-        except FileNotFoundError as e:
-            raise FileNotFoundError("Resume text file not found. Ensure 'data/resume.txt' exists.") from e
+       self.resume_text = self.data_loader.load_text('data/resume.txt')
 
     # Get job description embedding with error handling
     def get_embedding_with_error_handling(self, description: str) -> List[float]:
         try:
-            embedding = get_embeddings(description)
+            embedding = self.embeddings_calculator.get_embeddings(description)
             return embedding
         except Exception as e:
             print(f"Error generating embedding for description: {description}. Error: {e}")
@@ -51,12 +43,12 @@ class JobMatcher:
     # Calculate similarities between resume and job descriptions
     def calculate_similarities(self):
         self.job_embeddings = [self.get_embedding_with_error_handling(description) for description in self.job_descriptions]
-        self.resume_embedding = get_embeddings(self.resume_text)
+        self.resume_embedding = self.embeddings_calculator.get_embeddings(self.resume_text)
 
         if self.resume_embedding is None:
             raise ValueError("Failed to get embedding for resume. Please check the resume text and try again.")
 
-        self.similarities = [calculate_similarity(self.resume_embedding, job_emb) for job_emb in self.job_embeddings]
+        self.similarities = [self.embeddings_calculator.calculate_similarity(self.resume_embedding, job_emb) for job_emb in self.job_embeddings]
 
     # Rank the job listings based on similarity
     def rank_jobs(self):
